@@ -1,8 +1,3 @@
----
-output: 
-  html_document: 
-    keep_md: yes
----
 Coursera - Reproducible Research - Project 2
 Chenthil Ramasamy
 Wednesday, February 22, 2017
@@ -20,11 +15,26 @@ This analysis shows by aggregating the data by storm events type :
 Tornados are the most harmfull events on population health (including injury and fatalities).
 Floods are responsible for the most economic damage.
 Data Processing
-```{r}
+
+```r
 setwd("C:/Project2/")
 mydata <- read.csv(bzfile("repdata_data_StormData.csv.bz2"), sep=",", header = TRUE)
 # Looking into the various variables and indentifying the useful ones for this project
 names(mydata)
+```
+
+```
+##  [1] "STATE__"    "BGN_DATE"   "BGN_TIME"   "TIME_ZONE"  "COUNTY"    
+##  [6] "COUNTYNAME" "STATE"      "EVTYPE"     "BGN_RANGE"  "BGN_AZI"   
+## [11] "BGN_LOCATI" "END_DATE"   "END_TIME"   "COUNTY_END" "COUNTYENDN"
+## [16] "END_RANGE"  "END_AZI"    "END_LOCATI" "LENGTH"     "WIDTH"     
+## [21] "F"          "MAG"        "FATALITIES" "INJURIES"   "PROPDMG"   
+## [26] "PROPDMGEXP" "CROPDMG"    "CROPDMGEXP" "WFO"        "STATEOFFIC"
+## [31] "ZONENAMES"  "LATITUDE"   "LONGITUDE"  "LATITUDE_E" "LONGITUDE_"
+## [36] "REMARKS"    "REFNUM"
+```
+
+```r
 # Subsetting the storm data in the memory
 submydata <- mydata[ , c('EVTYPE', 'FATALITIES', 'INJURIES', 'PROPDMG', 'PROPDMGEXP', 
                          'CROPDMG', 'CROPDMGEXP')]
@@ -61,7 +71,8 @@ submydata[submydata$CROPDMGEXP == "B", ]$cd <-
 
 Analysis and Results
 Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health ?
-```{r}
+
+```r
 library(ggplot2)
 # Plotting the Number of Fatalities By the Most Harmful Event Types
 fat <- aggregate(FATALITIES ~ EVTYPE, data = submydata, sum)
@@ -74,7 +85,14 @@ ggplot(fat, aes(x = EVTYPE, y = FATALITIES)) +
   xlab("EVENT TYPE") + ylab("FATALITIES") +
   ggtitle("Number of Fatalities by Top 10 Weather Events")
 ```
-```{r}
+
+```
+## Warning: Ignoring unknown parameters: las
+```
+
+![](StormReport_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 # Plotting the Number of Injuries By the Most Harmful Event Types
 inj <- aggregate(INJURIES ~ EVTYPE, data = submydata, sum)
 inj <- inj[order(-inj$INJURIES), ][1:10, ]
@@ -87,8 +105,15 @@ ggplot(inj, aes(x = EVTYPE, y = INJURIES)) +
   ggtitle("Number of Injuries by Top 10 Weather Events")
 ```
 
+```
+## Warning: Ignoring unknown parameters: las
+```
+
+![](StormReport_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 Across the United States, which types of events have the greatest economic consequences ?
-```{r}
+
+```r
 # Plotting the Number of Damages Catagorized By the Most Harmful Event Types
 dam <- aggregate(pd + cd ~ EVTYPE, data = submydata, sum)
 names(dam) <- c("EVTYPE", "TDAMAGE")
@@ -101,4 +126,10 @@ ggplot(dam, aes(x = EVTYPE, y = TDAMAGE)) +
     xlab("EVENT TYPE") + ylab("DAMAGES (US$)") +
   ggtitle("Property & Crop Damages by Top 10 Weather Events")
 ```
+
+```
+## Warning: Ignoring unknown parameters: las
+```
+
+![](StormReport_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
